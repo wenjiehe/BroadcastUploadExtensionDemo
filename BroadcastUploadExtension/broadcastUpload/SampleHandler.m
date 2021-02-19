@@ -16,21 +16,28 @@
 
 - (void)broadcastPaused {
     // User has requested to pause the broadcast. Samples will stop being delivered.
+    NSLog(@"暂停录屏");
 }
 
 - (void)broadcastResumed {
     // User has requested to resume the broadcast. Samples delivery will resume.
+    NSLog(@"继续录屏");
 }
 
 - (void)broadcastFinished {
     // User has requested to finish the broadcast.
+    NSLog(@"结束录屏");
 }
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
-    
+    NSLog(@"录屏中...");
+
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:
             // Handle video sample buffer
+        {
+            
+        }
             break;
         case RPSampleBufferTypeAudioApp:
             // Handle audio sample buffer for app audio

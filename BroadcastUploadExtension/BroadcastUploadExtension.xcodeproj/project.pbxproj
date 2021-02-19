@@ -59,7 +59,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		3D2B134825DE1C8000EC92BA /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
@@ -67,7 +67,7 @@
 				3D2B134125DE1C8000EC92BA /* broadcastUpload.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -102,6 +102,7 @@
 		3D2B133B25DE1C8000EC92BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D2B134E25DE1CB800EC92BA /* broadcastUpload.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = broadcastUpload.entitlements; sourceTree = "<group>"; };
 		3D2B134F25DE1D2100EC92BA /* broadcastUploadSetupUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = broadcastUploadSetupUI.entitlements; sourceTree = "<group>"; };
+		3D2B135F25DE6A5500EC92BA /* BroadcastUploadExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BroadcastUploadExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +175,7 @@
 		3D2B12E025DE1B1900EC92BA /* BroadcastUploadExtension */ = {
 			isa = PBXGroup;
 			children = (
+				3D2B135F25DE6A5500EC92BA /* BroadcastUploadExtension.entitlements */,
 				3D2B12E125DE1B1900EC92BA /* AppDelegate.h */,
 				3D2B12E225DE1B1900EC92BA /* AppDelegate.m */,
 				3D2B12E425DE1B1900EC92BA /* SceneDelegate.h */,
@@ -627,7 +629,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = BroadcastUploadExtension/BroadcastUploadExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: WenJie He (5G4QS727RT)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = F87FYPRFA8;
 				INFOPLIST_FILE = BroadcastUploadExtension/Info.plist;
@@ -648,6 +651,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BroadcastUploadExtension/BroadcastUploadExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = F87FYPRFA8;
@@ -740,18 +744,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = broadcastUploadSetupUI/broadcastUploadSetupUI.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: WenJie He (5G4QS727RT)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = F87FYPRFA8;
 				INFOPLIST_FILE = broadcastUploadSetupUI/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = group.com.wj.liveStream;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.upload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = screenRecord;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -763,16 +768,17 @@
 				CODE_SIGN_ENTITLEMENTS = broadcastUploadSetupUI/broadcastUploadSetupUI.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = F87FYPRFA8;
 				INFOPLIST_FILE = broadcastUploadSetupUI/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = group.com.wj.liveStream;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.upload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = screenRecord;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -782,18 +788,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = broadcastUpload/broadcastUpload.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: WenJie He (5G4QS727RT)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = F87FYPRFA8;
 				INFOPLIST_FILE = broadcastUpload/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.broadcastUpload;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.upload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = screenRecord;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -805,16 +812,17 @@
 				CODE_SIGN_ENTITLEMENTS = broadcastUpload/broadcastUpload.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = F87FYPRFA8;
 				INFOPLIST_FILE = broadcastUpload/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.broadcastUpload;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.upload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = screenRecord;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
