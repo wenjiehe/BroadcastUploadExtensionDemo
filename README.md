@@ -3,4 +3,4 @@
 
 ## 报错Embedded binary's bundle identifier is not prefixed with the parent app's bundle identifier
 
-查看(解决方法)[https://www.jianshu.com/p/2c8f3529b092]
+查看[解决方法](https://www.jianshu.com/p/2c8f3529b092)
