@@ -11,7 +11,34 @@
 @implementation SampleHandler
 
 - (void)broadcastStartedWithSetupInfo:(NSDictionary<NSString *,NSObject *> *)setupInfo {
-    // User has requested to start the broadcast. Setup info from the UI extension can be supplied but optional. 
+    // User has requested to start the broadcast. Setup info from the UI extension can be supplied but optional.
+    NSLog(@"开始录屏");
+    //通过NSUserDefaults共享数据
+    NSUserDefaults *userShared = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.hewenjie.allFunctions"];
+    [userShared setObject:@"数据共享" forKey:@"wjContent"];
+    [userShared synchronize];
+}
+
+//将数据从共享的数据区中读取出来
+- (NSString *)readTextByFileManager
+{
+    NSError *err = nil;
+    NSURL *containerUrl = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"group.com.hewenjie.allFunctions"];
+    containerUrl = [containerUrl URLByAppendingPathComponent:@"Library/Caches/recodeUserData"];
+    NSString *value = [NSString stringWithContentsOfURL:containerUrl encoding:NSUTF8StringEncoding error:&err];
+    return value;
+}
+
+//将数据写入文件，并存入共享的数据区
+- (BOOL)writeTextByFileManager
+{
+    NSError *err = nil;
+    NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"group.com.hewenjie.allFunctions"];
+    containerURL = [containerURL URLByAppendingPathComponent:@"Library/Caches/recodeUserData"];
+    
+    NSString *value = @"xie ru shu ju";
+    BOOL result = [value writeToURL:containerURL atomically:YES encoding:NSUTF8StringEncoding error:&err];
+    return result;
 }
 
 - (void)broadcastPaused {
@@ -29,6 +56,7 @@
     NSLog(@"结束录屏");
 }
 
+//直播
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
     NSLog(@"录屏中...");
 
