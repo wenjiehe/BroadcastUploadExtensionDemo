@@ -59,18 +59,22 @@
 //直播
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
     NSLog(@"录屏中...");
-
+    NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)lastObject];
+    NSString *path = [cachesPath stringByAppendingPathComponent:@"Replay/screenRecord.mp4"];
+    NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
+    NSError *error = nil;
+    AVAssetWriter *writer = [AVAssetWriter assetWriterWithURL:url fileType:AVFileTypeMPEG4 error:&error];
     switch (sampleBufferType) {
-        case RPSampleBufferTypeVideo:
+        case RPSampleBufferTypeVideo: //视频缓冲器，得到YUV数据
             // Handle video sample buffer
         {
             
         }
             break;
-        case RPSampleBufferTypeAudioApp:
+        case RPSampleBufferTypeAudioApp: //处理app音频样本
             // Handle audio sample buffer for app audio
             break;
-        case RPSampleBufferTypeAudioMic:
+        case RPSampleBufferTypeAudioMic: //处理麦克风音频，mic音频样本
             // Handle audio sample buffer for mic audio
             break;
             

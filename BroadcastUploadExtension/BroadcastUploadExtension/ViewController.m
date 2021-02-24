@@ -13,6 +13,8 @@
 
 @property(nonatomic,strong)AVPlayerViewController* moviePlayer;
 @property(nonatomic,strong)NSString* videoPath;
+@property(nonatomic,strong)AVAssetWriter *assetWriter;
+@property(nonatomic,strong)AVAssetWriterInput *assetWriterInput;
 
 @end
 
@@ -118,9 +120,59 @@
 //        }];
         
         //iOS 11新增的录制方法，拿到录制的音视频数据
+        NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)lastObject];
+        NSString *path = [cachesPath stringByAppendingPathComponent:@"Replay/Record.mp4"];
+        NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
+        NSError *error = nil;
+        self.assetWriter = [AVAssetWriter assetWriterWithURL:url fileType:AVFileTypeMPEG4 error:&error];
+        NSDictionary *dic = @{AVVideoCodecKey : AVVideoCodecTypeH264,
+                              AVVideoWidthKey : [NSNumber numberWithFloat:UIScreen.mainScreen.bounds.size.width],
+                              AVVideoHeightKey : [NSNumber numberWithFloat:UIScreen.mainScreen.bounds.size.height]};
+        self.assetWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:dic];
+        self.assetWriterInput.expectsMediaDataInRealTime = true;
+        [self.assetWriter addInput:self.assetWriterInput];
         [recorder startCaptureWithHandler:^(CMSampleBufferRef  _Nonnull sampleBuffer, RPSampleBufferType bufferType, NSError * _Nullable error) {
             NSLog(@"录制过程中 error = %@", error);
             if (!error) {
+                if (CMSampleBufferDataIsReady(sampleBuffer)) {
+                    if (self.assetWriter.status == AVAssetWriterStatusUnknown) {
+                        NSLog(@"AVAssetWriterStatusUnknown");
+                        [self.assetWriter startWriting];
+                        [self.assetWriter startSessionAtSourceTime:CMSampleBufferGetPresentationTimeStamp(sampleBuffer)];
+                    }
+                    
+                    if (self.assetWriter.status == AVAssetWriterStatusFailed) {
+                        NSLog(@"AVAssetWriterStatusFailed");
+                        return;
+                    }
+                }
+                switch (bufferType) {
+                    case RPSampleBufferTypeVideo: //视频缓冲器，得到YUV数据
+                        // Handle video sample buffer
+                    {
+                        if (self.assetWriterInput.isReadyForMoreMediaData) {
+                            NSLog(@"正在写入");
+                            [self.assetWriterInput appendSampleBuffer:sampleBuffer];
+                        }
+                    }
+                        break;
+                    case RPSampleBufferTypeAudioApp: //处理app音频样本
+                        // Handle audio sample buffer for app audio
+                    {
+                        
+                    }
+                        break;
+                    case RPSampleBufferTypeAudioMic: //处理麦克风音频，mic音频样本
+                        // Handle audio sample buffer for mic audio
+                    {
+                        
+                    }
+                        break;
+                        
+                    default:
+                        break;
+                }
+            }else{
                 
             }
         } completionHandler:^(NSError * _Nullable error) {
@@ -152,6 +204,9 @@
     
     //iOS 11新增的停止录制方法
     [recorder stopCaptureWithHandler:^(NSError * _Nullable error) {
+        [self.assetWriter finishWritingWithCompletionHandler:^{
+            
+        }];
         if (error) {
             NSLog(@"%s, error = %@", __FUNCTION__, error);
         }
