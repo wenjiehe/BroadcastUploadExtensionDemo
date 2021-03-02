@@ -60,7 +60,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		3D2B134825DE1C8000EC92BA /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
@@ -68,7 +68,7 @@
 				3D2B134125DE1C8000EC92BA /* broadcastUpload.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -756,9 +756,9 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.upload;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.UIUpload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = screenRecord;
+				PROVISIONING_PROFILE_SPECIFIER = screenRecordUI;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -778,9 +778,9 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.upload;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hewenjie.allFunctions.UIUpload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = screenRecord;
+				PROVISIONING_PROFILE_SPECIFIER = screenRecordUI;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

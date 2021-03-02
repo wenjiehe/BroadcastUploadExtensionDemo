@@ -13,8 +13,13 @@
 
 @property(nonatomic,strong)AVPlayerViewController* moviePlayer;
 @property(nonatomic,strong)NSString* videoPath;
+@property(nonatomic,strong)NSString *recordVideoPath;
 @property(nonatomic,strong)AVAssetWriter *assetWriter;
-@property(nonatomic,strong)AVAssetWriterInput *assetWriterInput;
+@property(nonatomic,strong)AVAssetWriterInput *assetWriterVideoInput;
+@property(nonatomic,strong)AVAssetWriterInput *assetWriterAudioInput;
+@property(nonatomic,strong)AVAssetWriterInput *assetWriterMICAudioInput;
+@property(nonatomic,strong)AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor;
+//@property(nonatomic,strong)AVCaptureSession *captureSession;
 
 @end
 
@@ -24,7 +29,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self.view addSubview:self.moviePlayer.view];
+//    [self.view addSubview:self.moviePlayer.view];
     
     if (@available(iOS 12.0, *)) {
         RPSystemBroadcastPickerView *picker = [[RPSystemBroadcastPickerView alloc] initWithFrame:CGRectMake(0, 0, 100, 50)];
@@ -94,6 +99,64 @@
     }
 }
 
+- (void)initVideoInputWidth:(CGFloat)width height:(CGFloat)height
+{
+    NSDictionary *compressionProperties =
+        @{AVVideoProfileLevelKey         : AVVideoProfileLevelH264HighAutoLevel,
+          AVVideoH264EntropyModeKey      : AVVideoH264EntropyModeCABAC,
+          AVVideoAverageBitRateKey       : @(1920 * 1080 * 11.4),
+          AVVideoMaxKeyFrameIntervalKey  : @60,
+          AVVideoAllowFrameReorderingKey : @NO};
+    
+    NSDictionary *dic = @{AVVideoCompressionPropertiesKey : compressionProperties,
+                          AVVideoCodecKey : AVVideoCodecTypeH264,
+                          AVVideoWidthKey : [NSNumber numberWithFloat:width],
+                          AVVideoHeightKey : [NSNumber numberWithFloat:height]};
+    self.assetWriterVideoInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:dic];
+    self.pixelBufferAdaptor =
+    [[AVAssetWriterInputPixelBufferAdaptor alloc] initWithAssetWriterInput:self.assetWriterVideoInput
+                                              sourcePixelBufferAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA],kCVPixelBufferPixelFormatTypeKey,nil]];
+    [self.assetWriter addInput:self.assetWriterVideoInput];
+    [self.assetWriterVideoInput setMediaTimeScale:60];
+    [self.assetWriter setMovieTimeScale:60];
+    //表明输入是否应该调整其处理为实时数据源的数据
+    self.assetWriterVideoInput.expectsMediaDataInRealTime = true;
+    
+    [self.assetWriter startWriting];
+    [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
+    
+//    [self.captureSession startRunning];
+
+}
+
+- (void)initAudioInputChannels:(int)ch samples:(CGFloat)rate
+{
+    //音频的一些配置包括音频各种这里为AAC,音频通道、采样率和音频的比特率
+    NSDictionary *dic = @{AVFormatIDKey : [NSNumber numberWithInt:kAudioFormatMPEG4AAC],
+                          AVNumberOfChannelsKey : [NSNumber numberWithInt:ch], //音频通道
+                          AVSampleRateKey : [NSNumber numberWithFloat:rate], //采样率
+                          AVEncoderBitRateKey : [NSNumber numberWithInt:128000] //音频的比特率
+    };
+    self.assetWriterAudioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:dic];
+    //表明输入是否应该调整其处理为实时数据源的数据
+    self.assetWriterAudioInput.expectsMediaDataInRealTime = true;
+    [self.assetWriter addInput:self.assetWriterAudioInput];
+}
+
+- (void)initMICAudioInputWithChannels:(int)ch samples:(CGFloat)rate
+{
+    //音频的一些配置包括音频各种这里为AAC,音频通道、采样率和音频的比特率
+    NSDictionary *dic = @{AVFormatIDKey : [NSNumber numberWithInt:kAudioFormatMPEG4AAC],
+                          AVNumberOfChannelsKey : [NSNumber numberWithInt:ch], //音频通道
+                          AVSampleRateKey : [NSNumber numberWithFloat:rate], //采样率
+                          AVEncoderBitRateKey : [NSNumber numberWithInt:128000] //音频的比特率
+    };
+    self.assetWriterMICAudioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:dic];
+    //表明输入是否应该调整其处理为实时数据源的数据
+    self.assetWriterMICAudioInput.expectsMediaDataInRealTime = true;
+    [self.assetWriter addInput:self.assetWriterMICAudioInput];
+}
+
 //开始录屏
 - (void)StartRecoder
 {
@@ -119,41 +182,40 @@
 //            }
 //        }];
         
+//        self.captureSession = [[AVCaptureSession alloc]init];
         //iOS 11新增的录制方法，拿到录制的音视频数据
         NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)lastObject];
-        NSString *path = [cachesPath stringByAppendingPathComponent:@"Replay/Record.mp4"];
-        NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
+        self.recordVideoPath = [cachesPath stringByAppendingPathComponent:@"Replay/Record.mp4"];
+        NSURL *url = [[NSURL alloc] initFileURLWithPath:self.recordVideoPath];
         NSError *error = nil;
         self.assetWriter = [AVAssetWriter assetWriterWithURL:url fileType:AVFileTypeMPEG4 error:&error];
-        NSDictionary *dic = @{AVVideoCodecKey : AVVideoCodecTypeH264,
-                              AVVideoWidthKey : [NSNumber numberWithFloat:UIScreen.mainScreen.bounds.size.width],
-                              AVVideoHeightKey : [NSNumber numberWithFloat:UIScreen.mainScreen.bounds.size.height]};
-        self.assetWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:dic];
-        self.assetWriterInput.expectsMediaDataInRealTime = true;
-        [self.assetWriter addInput:self.assetWriterInput];
+        [self initVideoInputWidth:UIScreen.mainScreen.bounds.size.width height:UIScreen.mainScreen.bounds.size.height];
         [recorder startCaptureWithHandler:^(CMSampleBufferRef  _Nonnull sampleBuffer, RPSampleBufferType bufferType, NSError * _Nullable error) {
             NSLog(@"录制过程中 error = %@", error);
             if (!error) {
-                if (CMSampleBufferDataIsReady(sampleBuffer)) {
-                    if (self.assetWriter.status == AVAssetWriterStatusUnknown) {
-                        NSLog(@"AVAssetWriterStatusUnknown");
-                        [self.assetWriter startWriting];
-                        [self.assetWriter startSessionAtSourceTime:CMSampleBufferGetPresentationTimeStamp(sampleBuffer)];
-                    }
-                    
-                    if (self.assetWriter.status == AVAssetWriterStatusFailed) {
-                        NSLog(@"AVAssetWriterStatusFailed");
-                        return;
-                    }
-                }
+
+//                if (CMSampleBufferDataIsReady(sampleBuffer)) {
+//
+//
+//                    if (self.assetWriter.status == AVAssetWriterStatusFailed) {
+//                        NSLog(@"AVAssetWriterStatusFailed");
+//                        return;
+//                    }
+//                }
                 switch (bufferType) {
                     case RPSampleBufferTypeVideo: //视频缓冲器，得到YUV数据
                         // Handle video sample buffer
                     {
-                        if (self.assetWriterInput.isReadyForMoreMediaData) {
+                        CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+                        static int64_t frameNumber = 0;
+                        if (self.assetWriterVideoInput.readyForMoreMediaData) {
                             NSLog(@"正在写入");
-                            [self.assetWriterInput appendSampleBuffer:sampleBuffer];
+                            [self.pixelBufferAdaptor appendPixelBuffer:imageBuffer
+                                                  withPresentationTime:CMTimeMake(frameNumber, 25)];
                         }
+                        frameNumber++;
+                        
+                        NSLog(@"已获取的长度%lu",[NSData dataWithContentsOfFile:self.recordVideoPath].length);
                     }
                         break;
                     case RPSampleBufferTypeAudioApp: //处理app音频样本
@@ -202,6 +264,7 @@
 //        }
 //    }];
     
+//    [self.captureSession stopRunning];
     //iOS 11新增的停止录制方法
     [recorder stopCaptureWithHandler:^(NSError * _Nullable error) {
         [self.assetWriter finishWritingWithCompletionHandler:^{
@@ -209,7 +272,11 @@
         }];
         if (error) {
             NSLog(@"%s, error = %@", __FUNCTION__, error);
+        }else{
+            
         }
+        NSData* data = [NSData dataWithContentsOfFile:self.recordVideoPath];
+        NSLog(@"获取的总长度%lu",data.length);
     }];
 }
 

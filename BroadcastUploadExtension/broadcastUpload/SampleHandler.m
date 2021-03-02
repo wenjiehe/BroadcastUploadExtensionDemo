@@ -14,9 +14,9 @@
     // User has requested to start the broadcast. Setup info from the UI extension can be supplied but optional.
     NSLog(@"开始录屏");
     //通过NSUserDefaults共享数据
-    NSUserDefaults *userShared = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.hewenjie.allFunctions"];
-    [userShared setObject:@"数据共享" forKey:@"wjContent"];
-    [userShared synchronize];
+//    NSUserDefaults *userShared = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.hewenjie.allFunctions"];
+//    [userShared setObject:@"数据共享" forKey:@"wjContent"];
+//    [userShared synchronize];
 }
 
 //将数据从共享的数据区中读取出来
